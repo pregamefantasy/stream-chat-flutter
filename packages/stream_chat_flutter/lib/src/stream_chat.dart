@@ -101,7 +101,9 @@ class StreamChatState extends State<StreamChat> {
             return Theme(
               data: materialTheme.copyWith(
                 primaryIconTheme: streamTheme.primaryIconTheme,
-                accentColor: streamTheme.colorTheme.accentPrimary,
+                colorScheme: ColorScheme.fromSwatch().copyWith(
+                  secondary: streamTheme.colorTheme.accentPrimary,
+                ),
               ),
               child: StreamChatCore(
                 client: client,
