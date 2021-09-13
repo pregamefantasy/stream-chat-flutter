@@ -368,11 +368,13 @@ class MessageInputState extends State<MessageInput> {
       _onChanged(context, textEditingController.text);
     });
 
-    _focusNode.addListener(() {
-      if (_focusNode.hasFocus) {
-        _openFilePickerSection = false;
-      }
-    });
+    _focusNode.addListener(_focusNodeListener);
+  }
+
+  void _focusNodeListener() {
+    if (_focusNode.hasFocus) {
+      _openFilePickerSection = false;
+    }
   }
 
   int _timeOut = 0;
@@ -500,7 +502,7 @@ class MessageInputState extends State<MessageInput> {
                   ? null
                   : Border.all(
                       color: _streamChatTheme.colorTheme.textHighEmphasis
-                          .withOpacity(.5),
+                          .withOpacity(0.5),
                       width: 2,
                     ),
               borderRadius: BorderRadius.circular(3),
@@ -671,7 +673,7 @@ class MessageInputState extends State<MessageInput> {
                     decoration: _getInputDecoration(context),
                     textCapitalization: TextCapitalization.sentences,
                   ),
-                )
+                ),
               ],
             ),
           ),
@@ -718,31 +720,28 @@ class MessageInputState extends State<MessageInput> {
           ? Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Padding(
+                Container(
                   padding: const EdgeInsets.all(8),
-                  child: Container(
-                    constraints: BoxConstraints.tight(const Size(64, 24)),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(12),
-                      color: _streamChatTheme.colorTheme.accentPrimary,
-                    ),
-                    alignment: Alignment.center,
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        StreamSvgIcon.lightning(
+                  constraints: BoxConstraints.tight(const Size(64, 24)),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12),
+                    color: _streamChatTheme.colorTheme.accentPrimary,
+                  ),
+                  alignment: Alignment.center,
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      StreamSvgIcon.lightning(
+                        color: Colors.white,
+                        size: 16,
+                      ),
+                      Text(
+                        _chosenCommand?.name.toUpperCase() ?? '',
+                        style: _streamChatTheme.textTheme.footnoteBold.copyWith(
                           color: Colors.white,
-                          size: 16,
                         ),
-                        Text(
-                          _chosenCommand?.name.toUpperCase() ?? '',
-                          style:
-                              _streamChatTheme.textTheme.footnoteBold.copyWith(
-                            color: Colors.white,
-                          ),
-                        ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
               ],
@@ -804,6 +803,7 @@ class MessageInputState extends State<MessageInput> {
         StreamChannel.of(context)
             .channel
             .keyStroke(widget.parentMessage?.id)
+            // ignore: no-empty-block
             .catchError((e) {});
 
         setState(() {
@@ -943,8 +943,9 @@ class MessageInputState extends State<MessageInput> {
         child: Container(
           constraints: BoxConstraints.loose(const Size.fromHeight(400)),
           decoration: BoxDecoration(
-              color: _streamChatTheme.colorTheme.barsBg,
-              borderRadius: BorderRadius.circular(8)),
+            color: _streamChatTheme.colorTheme.barsBg,
+            borderRadius: BorderRadius.circular(8),
+          ),
           child: ListView(
             padding: const EdgeInsets.all(0),
             shrinkWrap: true,
@@ -966,9 +967,9 @@ class MessageInputState extends State<MessageInput> {
                         context.translations.instantCommandsLabel,
                         style: TextStyle(
                           color: _streamChatTheme.colorTheme.textHighEmphasis
-                              .withOpacity(.5),
+                              .withOpacity(0.5),
                         ),
-                      )
+                      ),
                     ],
                   ),
                 ),
@@ -996,7 +997,8 @@ class MessageInputState extends State<MessageInput> {
                               TextSpan(
                                 text: c.name.capitalize(),
                                 style: const TextStyle(
-                                    fontWeight: FontWeight.bold),
+                                  fontWeight: FontWeight.bold,
+                                ),
                                 children: [
                                   TextSpan(
                                     text: '   /${c.name} ${c.args}',
@@ -1024,21 +1026,22 @@ class MessageInputState extends State<MessageInput> {
       ),
     );
     return OverlayEntry(
-        builder: (context) => Positioned(
-              bottom: size.height + MediaQuery.of(context).viewInsets.bottom,
-              left: 0,
-              right: 0,
-              child: TweenAnimationBuilder<double>(
-                tween: Tween(begin: 0, end: 1),
-                duration: const Duration(milliseconds: 300),
-                curve: Curves.easeInOutExpo,
-                builder: (context, val, child) => Transform.scale(
-                  scale: val,
-                  child: child,
-                ),
-                child: child,
-              ),
-            ));
+      builder: (context) => Positioned(
+        bottom: size.height + MediaQuery.of(context).viewInsets.bottom,
+        left: 0,
+        right: 0,
+        child: TweenAnimationBuilder<double>(
+          tween: Tween(begin: 0, end: 1),
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeInOutExpo,
+          builder: (context, val, child) => Transform.scale(
+            scale: val,
+            child: child,
+          ),
+          child: child,
+        ),
+      ),
+    );
   }
 
   Widget _buildFilePickerSection() {
@@ -1154,15 +1157,13 @@ class MessageInputState extends State<MessageInput> {
                 ),
               ),
               child: Center(
-                child: Padding(
+                child: Container(
+                  width: 40,
+                  height: 4,
                   padding: const EdgeInsets.all(8),
-                  child: Container(
-                    width: 40,
-                    height: 4,
-                    decoration: BoxDecoration(
-                      color: _streamChatTheme.colorTheme.inputBg,
-                      borderRadius: BorderRadius.circular(4),
-                    ),
+                  decoration: BoxDecoration(
+                    color: _streamChatTheme.colorTheme.inputBg,
+                    borderRadius: BorderRadius.circular(4),
                   ),
                 ),
               ),
@@ -1393,7 +1394,8 @@ class MessageInputState extends State<MessageInput> {
                           textEditingController.value = TextEditingValue(
                             text: rejoin +
                                 textEditingController.text.substring(
-                                    textEditingController.selection.start),
+                                  textEditingController.selection.start,
+                                ),
                             selection: TextSelection.collapsed(
                               offset: rejoin.length,
                             ),
@@ -1460,90 +1462,89 @@ class MessageInputState extends State<MessageInput> {
     final size = renderBox.size;
 
     return OverlayEntry(
-        builder: (context) => Positioned(
-              bottom: size.height + MediaQuery.of(context).viewInsets.bottom,
-              left: 0,
-              right: 0,
-              child: Card(
-                margin: const EdgeInsets.all(8),
-                elevation: 2,
-                color: _streamChatTheme.colorTheme.barsBg,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
+      builder: (context) => Positioned(
+        bottom: size.height + MediaQuery.of(context).viewInsets.bottom,
+        left: 0,
+        right: 0,
+        child: Card(
+          margin: const EdgeInsets.all(8),
+          elevation: 2,
+          color: _streamChatTheme.colorTheme.barsBg,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8),
+          ),
+          clipBehavior: Clip.hardEdge,
+          child: Container(
+            constraints: BoxConstraints.loose(const Size.fromHeight(200)),
+            decoration: BoxDecoration(
+              boxShadow: const [
+                BoxShadow(
+                  spreadRadius: -8,
+                  blurRadius: 5,
+                  offset: Offset(0, -4),
                 ),
-                clipBehavior: Clip.hardEdge,
-                child: Container(
-                  constraints: BoxConstraints.loose(const Size.fromHeight(200)),
-                  decoration: BoxDecoration(
-                    boxShadow: const [
-                      BoxShadow(
-                        spreadRadius: -8,
-                        blurRadius: 5,
-                        offset: Offset(0, -4),
-                      ),
-                    ],
-                    color: _streamChatTheme.colorTheme.barsBg,
-                  ),
-                  child: ListView.builder(
-                      padding: const EdgeInsets.all(0),
-                      shrinkWrap: true,
-                      itemCount: emojis.length + 1,
-                      itemBuilder: (context, i) {
-                        if (i == 0) {
-                          return Padding(
-                            padding: const EdgeInsets.only(left: 8, top: 8),
-                            child: Row(
-                              children: [
-                                Padding(
-                                  padding:
-                                      const EdgeInsets.symmetric(horizontal: 8),
-                                  child: StreamSvgIcon.smile(
-                                    color: _streamChatTheme
-                                        .colorTheme.accentPrimary,
-                                  ),
-                                ),
-                                Flexible(
-                                  child: Text(
-                                    context.translations.emojiMatchingQueryText(
-                                      query,
-                                    ),
-                                    style: TextStyle(
-                                      color: _streamChatTheme
-                                          .colorTheme.textHighEmphasis
-                                          .withOpacity(.5),
-                                    ),
-                                  ),
-                                )
-                              ],
+              ],
+              color: _streamChatTheme.colorTheme.barsBg,
+            ),
+            child: ListView.builder(
+              padding: const EdgeInsets.all(0),
+              shrinkWrap: true,
+              itemCount: emojis.length + 1,
+              itemBuilder: (context, i) {
+                if (i == 0) {
+                  return Padding(
+                    padding: const EdgeInsets.only(left: 8, top: 8),
+                    child: Row(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8),
+                          child: StreamSvgIcon.smile(
+                            color: _streamChatTheme.colorTheme.accentPrimary,
+                          ),
+                        ),
+                        Flexible(
+                          child: Text(
+                            context.translations.emojiMatchingQueryText(
+                              query,
                             ),
-                          );
-                        }
-
-                        final emoji = emojis.elementAt(i - 1)!;
-                        final themeData = Theme.of(context);
-                        return ListTile(
-                          title: SubstringHighlight(
-                            text:
-                                // ignore: lines_longer_than_80_chars
-                                "${emoji.char} ${emoji.name!.replaceAll('_', ' ')}",
-                            term: query,
-                            textStyleHighlight:
-                                themeData.textTheme.headline6!.copyWith(
-                              fontSize: 14.5,
-                              fontWeight: FontWeight.bold,
-                            ),
-                            textStyle: themeData.textTheme.headline6!.copyWith(
-                              fontSize: 14.5,
+                            style: TextStyle(
+                              color: _streamChatTheme
+                                  .colorTheme.textHighEmphasis
+                                  .withOpacity(0.5),
                             ),
                           ),
-                          onTap: () {
-                            _chooseEmoji(splits, emoji);
-                          },
-                        );
-                      }),
-                ),
-              ),
-            ));
+                        ),
+                      ],
+                    ),
+                  );
+                }
+
+                final emoji = emojis.elementAt(i - 1)!;
+                final themeData = Theme.of(context);
+                return ListTile(
+                  title: SubstringHighlight(
+                    text:
+                        // ignore: lines_longer_than_80_chars
+                        "${emoji.char} ${emoji.name!.replaceAll('_', ' ')}",
+                    term: query,
+                    textStyleHighlight: themeData.textTheme.headline6!.copyWith(
+                      fontSize: 14.5,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    textStyle: themeData.textTheme.headline6!.copyWith(
+                      fontSize: 14.5,
+                    ),
+                  ),
+                  onTap: () {
+                    _chooseEmoji(splits, emoji);
+                  },
+                );
+              },
+            ),
+          ),
+        ),
+      ),
+    );
   }
 
   void _chooseEmoji(List<String> splits, Emoji emoji) {
@@ -1575,8 +1576,7 @@ class MessageInputState extends State<MessageInput> {
   Widget _buildReplyToMessage() {
     if (!_hasQuotedMessage) return const Offstage();
     final containsUrl = widget.quotedMessage!.attachments
-            .any((element) => element.ogScrapeUrl != null) ==
-        true;
+        .any((element) => element.ogScrapeUrl != null);
     return QuotedMessageWidget(
       reverse: true,
       showBorder: !containsUrl,
@@ -1681,7 +1681,7 @@ class MessageInputState extends State<MessageInput> {
             setState(() => _attachments.remove(attachment.id));
           },
           fillColor:
-              _streamChatTheme.colorTheme.textHighEmphasis.withOpacity(.5),
+              _streamChatTheme.colorTheme.textHighEmphasis.withOpacity(0.5),
           child: Center(
             child: StreamSvgIcon.close(
               size: 24,
@@ -2181,10 +2181,11 @@ class MessageInputState extends State<MessageInput> {
       backgroundColor: _streamChatTheme.colorTheme.barsBg,
       context: context,
       shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.only(
-        topLeft: Radius.circular(16),
-        topRight: Radius.circular(16),
-      )),
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(16),
+          topRight: Radius.circular(16),
+        ),
+      ),
       builder: (context) => Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -2217,7 +2218,7 @@ class MessageInputState extends State<MessageInput> {
           ),
           Container(
             color:
-                _streamChatTheme.colorTheme.textHighEmphasis.withOpacity(.08),
+                _streamChatTheme.colorTheme.textHighEmphasis.withOpacity(0.08),
             height: 1,
           ),
           Row(
@@ -2254,6 +2255,7 @@ class MessageInputState extends State<MessageInput> {
     _mentionsOverlay?.remove();
     _keyboardListener?.cancel();
     textEditingController.dispose();
+    _focusNode.removeListener(_focusNodeListener);
     _stopSlowMode();
     super.dispose();
   }
@@ -2363,7 +2365,8 @@ class _PickerWidgetState extends State<_PickerWidget> {
                 Text(
                   context.translations.enablePhotoAndVideoAccessMessage,
                   style: widget.streamChatTheme.textTheme.body.copyWith(
-                      color: widget.streamChatTheme.colorTheme.textLowEmphasis),
+                    color: widget.streamChatTheme.colorTheme.textLowEmphasis,
+                  ),
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 6),

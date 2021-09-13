@@ -120,7 +120,8 @@ extension FlipBorder on BorderRadius {
           topLeft: topRight,
           topRight: topLeft,
           bottomLeft: bottomRight,
-          bottomRight: bottomLeft)
+          bottomRight: bottomLeft,
+        )
       : this;
 }
 

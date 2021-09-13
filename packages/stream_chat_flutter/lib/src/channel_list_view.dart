@@ -554,7 +554,8 @@ class _ChannelListViewState extends State<ChannelListView> {
                 'owner',
               ].contains(channel.state!.members
                   .firstWhereOrNull(
-                      (m) => m.userId == channel.client.state.currentUser?.id)
+                    (m) => m.userId == channel.client.state.currentUser?.id,
+                  )
                   ?.role))
                 IconSlideAction(
                   color: backgroundColor,
