@@ -13,7 +13,7 @@ on:
 
 jobs:
   check_llc:
-    name: dart-code-metrics
+    name: dart-code-metrics-llc
     runs-on: ubuntu-latest
     steps:
       - name: "Git Checkout"
@@ -44,7 +44,7 @@ jobs:
           folders: ${{ env.folders }}
 
   check_core:
-    name: dart-code-metrics
+    name: dart-code-metrics-core
     runs-on: ubuntu-latest
     steps:
       - name: "Git Checkout"
@@ -75,7 +75,7 @@ jobs:
           folders: ${{ env.folders }}
 
   check_persistence:
-    name: dart-code-metrics
+    name: dart-code-metrics-persistence
     runs-on: ubuntu-latest
     steps:
       - name: "Git Checkout"
@@ -106,7 +106,7 @@ jobs:
           folders: ${{ env.folders }}
 
   check_ui:
-    name: dart-code-metrics
+    name: dart-code-metrics-ui
     runs-on: ubuntu-latest
     steps:
       - name: "Git Checkout"
@@ -137,7 +137,7 @@ jobs:
           folders: ${{ env.folders }}
 
   check_localizations:
-    name: dart-code-metrics
+    name: dart-code-metrics-localizations
     runs-on: ubuntu-latest
     steps:
       - name: "Git Checkout"
